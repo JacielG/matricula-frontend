@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Dropdown, PrimaryButton, ProgressIndicator, TextField } from '@fluentui/react';
-import { restClient } from '../../../services/restClient';
+import { restClient } from '../../services/restClient';
 
 const generos = [{ key: 'F', text: 'F' }, { key: 'M', text: 'M' }];
 

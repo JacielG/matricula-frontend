@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CommandBar, DefaultButton, DetailsListLayoutMode, Dialog, DialogFooter, DialogType, IconButton, Panel, PrimaryButton, SearchBox, Selection, SelectionMode, ShimmeredDetailsList } from '@fluentui/react';
 import './curso.css'
-import { restClient } from '../../../services/restClient';
+import { restClient } from '../../services/restClient';
 import { CursoForm } from './cursoForm';
 
 export const Curso = () => {
