@@ -1,17 +1,17 @@
-.curso {
+.profesor {
     display: grid;
     grid-template-rows: 80px 60px calc(100% - 260px);
 }
 
-.curso .ms-CommandBar {
+.profesor .ms-CommandBar {
     background-color: #f3f2f1;
 }
 
-.curso .ms-CommandBar button{
+.profesor .ms-CommandBar button{
     background-color: #f3f2f1;
 }
 
-.curso .ms-CommandBar button :hover{
+.profesor .ms-CommandBar button :hover{
     background-color: #e1dfdd;
 }
 

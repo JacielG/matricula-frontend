@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
-import {
-    PrimaryButton,
-    ProgressIndicator,
-    TextField
-} from '@fluentui/react';
 
+import { PrimaryButton, ProgressIndicator, TextField } from '@fluentui/react';
 import { restClient } from '../../services/restClient';
 
-export const CursoForm = ({ fetchCursos, cursoSeleccionado, accion, onDismiss }) => {
-    const [curso, setCurso] = useState({
-        id: accion === 'Edit' ? cursoSeleccionado.id : 0,
-        nombre: accion === 'Edit' ? cursoSeleccionado.nombre : ''
+export const PaisForm = ({ fetchPaises, paisSeleccionado, accion, onDismiss }) => {
+    const [pais, setPais] = useState({
+        id: accion === 'Edit' ? paisSeleccionado.id : 0,
+        nombre: accion === 'Edit' ? paisSeleccionado.nombre : ''
     });
 
     const [mensajeValidacion, setMensajeValidacion] = useState('');
@@ -21,13 +17,13 @@ export const CursoForm = ({ fetchCursos, cursoSeleccionado, accion, onDismiss })
     const [showSpinner, setShowSpinner] = useState(false);
 
     const handleTextFieldChange = prop => (event, value) => {
-        setCurso({ ...curso, [prop]: value })
+        setPais({ ...pais, [prop]: value })
     }
 
     const validandoCampos = () => {
         let mensaje = {};
 
-        if (!curso.nombre) {
+        if (!pais.nombre) {
             mensaje = { ...mensaje, nombre: 'Ingrese nombre' };
         }
 
@@ -41,9 +37,9 @@ export const CursoForm = ({ fetchCursos, cursoSeleccionado, accion, onDismiss })
             return;
         }
 
-        setShowSpinner(true); //activar spinner
+        setShowSpinner(true);
 
-        const response = await restClient.httpPost('/Curso', curso);
+        const response = await restClient.httpPost('/pais', pais);
 
         if (typeof response === 'string') {
             setMensajeValidacion(response);
@@ -52,7 +48,7 @@ export const CursoForm = ({ fetchCursos, cursoSeleccionado, accion, onDismiss })
         if (typeof response == "object") {
             setMensajeValidacion('Saved');
 
-            fetchCursos();
+            fetchPaises();
         }
 
         setShowSpinner(false);
@@ -66,14 +62,14 @@ export const CursoForm = ({ fetchCursos, cursoSeleccionado, accion, onDismiss })
 
         setShowSpinner(true);
 
-        const url = `/Curso/${cursoSeleccionado.id}`;
+        const url = `/Pais/${paisSeleccionado.id}`;
 
-        const response = await restClient.httpPut(url, curso);
+        const response = await restClient.httpPut(url, pais);
 
         if (response === 'success') {
             setMensajeValidacion('Saved');
 
-            fetchCursos();
+            fetchPaises();
         } else {
             setMensajeValidacion(response);
         }
@@ -84,13 +80,13 @@ export const CursoForm = ({ fetchCursos, cursoSeleccionado, accion, onDismiss })
 
     return (
         <div>
-
             {showSpinner && <ProgressIndicator label="Guardando..." />}
 
             <TextField label="Nombre"
-                value={curso.nombre}
+                value={pais.nombre}
                 onChange={handleTextFieldChange('nombre')}
-                errorMessage={errorCampo.nombre} />
+                errorMessage={errorCampo.nombre}
+            />
 
             <br />
 

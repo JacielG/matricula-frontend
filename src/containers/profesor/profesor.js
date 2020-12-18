@@ -16,47 +16,47 @@ import {
 } from '@fluentui/react';
 
 import { restClient } from '../../services/restClient';
-import { EstudianteForm } from './estudianteForm';
-import './estudiante.css';
+import { ProfesorForm } from './profesorForm';
+import './profesor.css';
 
-export const Estudiante = () => {
+export const Profesor = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenAlert, setIsOpenAlert] = useState(true);
-    const [estudiantes, setEstudiantes] = useState(undefined);
+    const [profesores, setProfesores] = useState(undefined); //data.map(item => ({ ...item, nombreCurso: item.curso.nombre }))
     const [filtro, setFiltro] = useState([]);
-    const [estudiante, setEstudiante] = useState();
+    const [profesor, setProfesor] = useState();
     const [acccion, setAccion] = useState('New');
 
     useEffect(() => {
-        fetchEstudiantes();
+        fetchProfesores();
     }, []);
 
-    const fetchEstudiantes = async () => {
-        const response = await restClient.httpGet('/estudiante');
+    const fetchProfesores = async () => {
+        const response = await restClient.httpGet('/profesor');
 
         if (!response.length) {
             return;
         }
 
-        setEstudiantes(response.map(item => ({ ...item, nombreCurso: item.curso.nombre, nombrePais: item.pais.nombre })));
+        setProfesores(response.map(item => ({ ...item, nombreMateria: item.materia.nombre, nombrePais: item.pais.nombre })));
     }
 
     const handleRefreshClick = () => {
-        setEstudiantes(undefined);
+        setProfesores(undefined);
 
-        fetchEstudiantes();
+        fetchProfesores();
     }
 
     const handleDismissClick = () => {
         setIsOpen(!isOpen);
     }
 
-    const handleNuevoEstudianteClick = () => {
+    const handleNuevoProfesorClick = () => {
         setAccion('New');
         setIsOpen(true);
     }
 
-    const handleRemoveEstudianteClick = () => {
+    const handleRemoveProfesorClick = () => {
         setIsOpenAlert(false);
     }
 
@@ -64,22 +64,22 @@ export const Estudiante = () => {
         onSelectionChanged: () => {
             const itemSeleccionado = seleccion.getSelection();
 
-            setEstudiante(itemSeleccionado.length ? itemSeleccionado[0] : null);
+            setProfesor(itemSeleccionado.length ? itemSeleccionado[0] : null);
 
         },
     });
 
-    const handleSearchEstudiante = value => {
+    const handleSearchProfesor = value => {
 
         if (!value) {
-            setEstudiantes(undefined);
+            setProfesores(undefined);
             setFiltro([]);
-            fetchEstudiantes();
+            fetchProfesores();
 
             return;
         }
 
-        const dataFilter = estudiantes && estudiantes.filter(item => item.nombre.toUpperCase().includes(value.toUpperCase()));
+        const dataFilter = profesores && profesores.filter(item => item.nombre.toUpperCase().includes(value.toUpperCase()));
 
         setFiltro(dataFilter);
     }
@@ -88,53 +88,52 @@ export const Estudiante = () => {
         setIsOpenAlert(true);
     }
 
-    const handleEditEstudianteClick = () => {
-        if (!estudiante) return 'Selecione un estudiante';
+    const handleEditProfesorClick = () => {
+        if (!profesor) return 'Selecione un profesor';
 
         setAccion('Edit');
         setIsOpen(true);
     }
 
-    const handleRemoverEstudianteClick = async () => {
-        if (!estudiante) return;
+    const handleRemoverProfesorClick = async () => {
+        if (!profesor) return;
 
-        const response = await restClient.httpDelete('/estudiante', estudiante.id);
+        const response = await restClient.httpDelete('/profesor', profesor.id);
 
         if (response === 'success') {
             handleDismissAlertClick();
-            setEstudiantes(undefined);
-            fetchEstudiantes();
+            setProfesores(undefined);
+            fetchProfesores();
         }
     }
 
-    const handleNoRemoverEstudianteClick = () => {
-
+    const handleNoRemoverProfesorClick = () => {
         handleDismissAlertClick();
     }
 
-    const onRenderEdit = (row) => <IconButton iconProps={{ iconName: 'Edit' }} onClick={handleEditEstudianteClick} />
-    const onRenderDelete = (row) => <IconButton iconProps={{ iconName: 'Delete' }} onClick={handleRemoveEstudianteClick} />
+    const onRenderEdit = (row) => <IconButton iconProps={{ iconName: 'Edit' }} onClick={handleEditProfesorClick} />
+    const onRenderDelete = (row) => <IconButton iconProps={{ iconName: 'Delete' }} onClick={handleRemoveProfesorClick} />
 
     const columns = [
         { key: 'onRenderEdit', name: '', fieldName: '', minWidth: 30, maxWidth: 30, isResizable: true, onRender: onRenderEdit },
         { key: 'onRenderDelete', name: '', fieldName: '', minWidth: 30, maxWidth: 30, isResizable: true, onRender: onRenderDelete },
         { key: 'column1', name: 'Id', fieldName: 'id', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column2', name: 'Estudiante', fieldName: 'nombre', minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: 'column2', name: 'Profesor', fieldName: 'nombre', minWidth: 100, maxWidth: 200, isResizable: true },
         { key: 'column3', name: 'Edad', fieldName: 'edad', minWidth: 100, maxWidth: 200, isResizable: true },
         { key: 'column4', name: 'Sexo', fieldName: 'sexo', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column3', name: 'Telefono', fieldName: 'telefono', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column3', name: 'Direccion', fieldName: 'direccion', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column3', name: 'Correo', fieldName: 'correo', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column5', name: 'CursoId', fieldName: 'cursoId', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column6', name: 'Nombre Curso', fieldName: 'nombreCurso', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column5', name: 'PaisId', fieldName: 'paisId', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'column6', name: 'Nombre Pais', fieldName: 'nombrePais', minWidth: 100, maxWidth: 200, isResizable: true }
+        { key: 'column5', name: 'Telefono', fieldName: 'telefono', minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: 'column5', name: 'Direccion', fieldName: 'direccion', minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: 'column5', name: 'Correo', fieldName: 'correo', minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: 'column6', name: 'PaisId', fieldName: 'paisId', minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: 'column7', name: 'Nombre Pais', fieldName: 'nombrePais', minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: 'column8', name: 'MateriaId', fieldName: 'materiaId', minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: 'column9', name: 'Nombre Materia', fieldName: 'nombreMateria', minWidth: 100, maxWidth: 200, isResizable: true },
     ]
 
-    const isDisableButton = estudiante ? false : true;
+    const isDisableButton = profesor ? false : true;
 
     return (
-        <div className="estudiante">
+        <div className="profesor">
 
             <CommandBar
                 items={[{
@@ -143,50 +142,50 @@ export const Estudiante = () => {
                     iconProps: { iconName: 'Refresh' },
                     onClick: handleRefreshClick,
                 }, {
-                    key: 'nuevoEstudiante',
-                    text: 'Nuevo',
+                    key: 'nuevoProfesor',
+                    text: 'New',
                     iconProps: { iconName: 'Add' },
-                    onClick: handleNuevoEstudianteClick,
+                    onClick: handleNuevoProfesorClick,
                 },
                 {
-                    key: 'removerEstudiante',
+                    key: 'removerProfesor',
                     text: 'Remove',
                     iconProps: { iconName: 'Delete' },
-                    onClick: handleRemoveEstudianteClick,
+                    onClick: handleRemoveProfesorClick,
                     disabled: isDisableButton
                 }, {
-                    key: 'editarEstudiante',
-                    text: 'Editar Estudiante',
+                    key: 'editarProfesor',
+                    text: 'Editar Profesor',
                     iconProps: { iconName: 'Edit' },
-                    onClick: handleEditEstudianteClick,
+                    onClick: handleEditProfesorClick,
                     disabled: isDisableButton
                 }]}
             />
 
             <SearchBox
-                styles={{ root: { width: '300px' } }} placeholder="Buscar..." onSearch={handleSearchEstudiante} />
+                styles={{ root: { width: '300px' } }} placeholder="Buscar..." onSearch={handleSearchProfesor} />
 
             <div className="contenedorLista">
                 <ShimmeredDetailsList
-                    items={filtro.length ? filtro : estudiantes}
+                    items={filtro.length ? filtro : profesores}
                     columns={columns}
                     layoutMode={DetailsListLayoutMode.justified}
                     selection={seleccion}
                     selectionPreservedOnEmptyClick={true}
                     selectionMode={SelectionMode.single}
-                    enableShimmer={!estudiantes}
+                    enableShimmer={!profesores}
                 />
             </div>
 
             <Panel
-                headerText={acccion === 'New' ? "Nuevo Estudiante" : "Editar Estudiante"}
+                headerText={acccion === 'New' ? "Nuevo Profesor" : "Editar Profesor"}
                 isOpen={isOpen}
                 onDismiss={handleDismissClick}
                 customWidth="700px"
             >
-                <EstudianteForm
-                    fetchEstudiantes={fetchEstudiantes}
-                    estudianteSeleccionado={estudiante || {}}
+                <ProfesorForm
+                    fetchProfesores={fetchProfesores}
+                    profesorSeleccionado={profesor || {}}
                     acccion={acccion}
                     onDismiss={handleDismissClick}
                 />
@@ -197,9 +196,9 @@ export const Estudiante = () => {
                 onDismiss={handleDismissAlertClick}
                 dialogContentProps={{
                     type: DialogType.normal,
-                    title: 'Eliminar Estudiante',
+                    title: 'Remove Profesor',
                     closeButtonAriaLabel: 'Close',
-                    subText: '¿Eliminar Estudiante?',
+                    subText: 'Remove Profesor?',
                 }}
                 modalProps={{
                     titleAriaId: '',
@@ -208,9 +207,10 @@ export const Estudiante = () => {
                     styles: { main: { maxWidth: 450 } },
                 }}
             >
+
                 <DialogFooter>
-                    <PrimaryButton onClick={handleRemoverEstudianteClick} text="Si" />
-                    <DefaultButton onClick={handleNoRemoverEstudianteClick} text="No" />
+                    <PrimaryButton onClick={handleRemoverProfesorClick} text="Si" />
+                    <DefaultButton onClick={handleNoRemoverProfesorClick} text="No" />
                 </DialogFooter>
             </Dialog>
         </div>

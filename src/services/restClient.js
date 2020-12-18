@@ -1,12 +1,21 @@
 const urlBase = 'https://localhost:44394/api'
-
 export class restClient {
     static httpGet = (url) => {
 
-        return fetch(`${urlBase}${url}`)
-            .then(response => response.json())
+        return fetch(`${urlBase}${url}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
             .then(response => {
-                return response;
+                if (response.status === 400) {
+                    return response.text();
+                }
+                return response.json();
+            })
+            .then(response => {
+                return response
             });
     }
 

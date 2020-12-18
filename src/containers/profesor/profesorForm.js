@@ -1,47 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown, PrimaryButton, ProgressIndicator, TextField } from '@fluentui/react';
+import {
+    Dropdown,
+    PrimaryButton,
+    ProgressIndicator,
+    TextField
+} from '@fluentui/react';
 
 import { restClient } from '../../services/restClient';
 
 const generos = [{ key: 'F', text: 'F' }, { key: 'M', text: 'M' }];
 
-export const EstudianteForm = ({ fetchEstudiantes, estudianteSeleccionado, acccion, onDismiss }) => {
-    const [estudiante, setEstudiante] = useState({
-        id: acccion === 'Edit' ? estudianteSeleccionado.id : 0,
-        nombre: acccion === 'Edit' ? estudianteSeleccionado.nombre : '',
-        sexo: acccion === 'Edit' ? estudianteSeleccionado.sexo : '',
-        telefono: acccion === 'Edit' ? estudianteSeleccionado.telefono : '',
-        direccion: acccion === 'Edit' ? estudianteSeleccionado.direccion : '',
-        correo: acccion === 'Edit' ? estudianteSeleccionado.correo : '',
-        edad: acccion === 'Edit' ? estudianteSeleccionado.edad : 0,
-        paisId: acccion === 'Edit' ? estudianteSeleccionado.cursoId : 0,
-        cursoId: acccion === 'Edit' ? estudianteSeleccionado.paisId : 0
+export const ProfesorForm = ({ fetchProfesores, profesorSeleccionado, acccion, onDismiss }) => {
+    const [profesor, setProfesor] = useState({
+        id: acccion === 'Edit' ? profesorSeleccionado.id : 0,
+        nombre: acccion === 'Edit' ? profesorSeleccionado.nombre : '',
+        edad: acccion === 'Edit' ? profesorSeleccionado.edad : 0,
+        sexo: acccion === 'Edit' ? profesorSeleccionado.sexo : '',
+        telefono: acccion === 'Edit' ? profesorSeleccionado.telefono : '',
+        direccion: acccion === 'Edit' ? profesorSeleccionado.direccion : '',
+        correo: acccion === 'Edit' ? profesorSeleccionado.correo : '',
+        paisId: acccion === 'Edit' ? profesorSeleccionado.paisId : 0,
+        materiaId: acccion === 'Edit' ? profesorSeleccionado.materiaId : 0
     });
 
     const [mensajeValidacion, setMensajeValidacion] = useState('');
     const [errorCampo, setErrorCampo] = useState({
         nombre: '',
+        edad: '',
         sexo: '',
         telefono: '',
         direccion: '',
         correo: '',
-        edad: '',
         paisId: '',
-        cursoId: ''
+        materiaId: ''
     });
 
-    const [cursos, setCursos] = useState([]);
+    const [materias, setMaterias] = useState([]);
     const [paises, setPaises] = useState([]);
     const [showSpinner, setShowSpinner] = useState(false);
 
     useEffect(() => {
-        const fetchCursos = async () => {
-            const response = await restClient.httpGet('/curso');
+        const fetchMaterias = async () => {
+            const response = await restClient.httpGet('/materia');
 
             if (response && response.length) {
-                setCursos(response.map(curso => ({
-                    key: curso.id,
-                    text: curso.nombre
+                setMaterias(response.map(materia => ({
+                    key: materia.id,
+                    text: materia.nombre
                 })))
             }
         }
@@ -58,65 +63,64 @@ export const EstudianteForm = ({ fetchEstudiantes, estudianteSeleccionado, accci
         }
 
         fetchPaises();
-        fetchCursos();
+        fetchMaterias();
     }, []);
 
     const handleTextFieldChange = prop => (event, value) => {
-        setEstudiante({ ...estudiante, [prop]: value })
+        setProfesor({ ...profesor, [prop]: value })
     }
 
-    const handleSelectedCursoChange = (event, option) => {
-        setEstudiante({ ...estudiante, cursoId: option.key });
+    const handleSelectedMateriaChange = (event, option) => {
+        setProfesor({ ...profesor, materiaId: option.key });
     }
 
     const handleSelectedPaisChange = (event, option) => {
-        setEstudiante({ ...estudiante, paisId: option.key });
+        setProfesor({ ...profesor, paisId: option.key });
     }
 
     const handleSelectedSexoChange = (event, option) => {
-        setEstudiante({ ...estudiante, sexo: option.key });
+        setProfesor({ ...profesor, sexo: option.key });
     }
 
     const validandoCampos = () => {
         let mensaje = {};
 
-        if (!estudiante.nombre) {
+        if (!profesor.nombre) {
             mensaje = { ...mensaje, nombre: 'Ingrese nombre' };
         }
 
-        if (estudiante.edad < 18) {
+        if (profesor.edad < 18) {
             mensaje = { ...mensaje, edad: 'Edad debe sera mayor o igual a 18' };
         }
 
-        if (!estudiante.sexo) {
+        if (!profesor.sexo) {
             mensaje = { ...mensaje, sexo: 'Seleccione un genero...' };
         }
 
-        if (!estudiante.telefono) {
-            mensaje = { ...mensaje, nombre: 'Ingrese telefono' };
+        if (!profesor.telefono) {
+            mensaje = { ...mensaje, sexo: 'Ingrese telefono' };
         }
 
-        if (!estudiante.direccion) {
-            mensaje = { ...mensaje, nombre: 'Ingrese direccion' };
+        if (!profesor.direccion) {
+            mensaje = { ...mensaje, sexo: 'Ingrese direccion' };
         }
 
-        if (!estudiante.correo) {
-            mensaje = { ...mensaje, nombre: 'Ingrese correo' };
+        if (!profesor.correo) {
+            mensaje = { ...mensaje, sexo: 'Ingrese correo' };
         }
 
-        if (!estudiante.paisId) {
+        if (!profesor.paisId) {
             mensaje = { ...mensaje, cursoId: 'Seleccione un pais...' };
         }
 
-        if (!estudiante.cursoId) {
-            mensaje = { ...mensaje, cursoId: 'Seleccione un curso...' };
+        if (!profesor.materiaId) {
+            mensaje = { ...mensaje, cursoId: 'Seleccione una materia...' };
         }
 
         setErrorCampo(mensaje);
 
         return Object.keys(mensaje).length;
     }
-
 
     const handleGuardarClick = async () => {
         if (validandoCampos()) {
@@ -125,7 +129,7 @@ export const EstudianteForm = ({ fetchEstudiantes, estudianteSeleccionado, accci
 
         setShowSpinner(true);
 
-        const response = await restClient.httpPost('/Estudiante', estudiante);
+        const response = await restClient.httpPost('/Profesor', profesor);
 
         if (typeof response === 'string') {
             setMensajeValidacion(response);
@@ -134,7 +138,7 @@ export const EstudianteForm = ({ fetchEstudiantes, estudianteSeleccionado, accci
         if (typeof response == "object") {
             setMensajeValidacion('Saved');
 
-            fetchEstudiantes();
+            fetchProfesores();
         }
 
         setShowSpinner(false);
@@ -148,14 +152,14 @@ export const EstudianteForm = ({ fetchEstudiantes, estudianteSeleccionado, accci
 
         setShowSpinner(true);
 
-        const url = `/Estudiante/${estudianteSeleccionado.id}`;
+        const url = `/Profesor/${profesorSeleccionado.id}`;
 
-        const response = await restClient.httpPut(url, estudiante);
+        const response = await restClient.httpPut(url, profesor);
 
         if (response === 'success') {
             setMensajeValidacion('Saved');
 
-            fetchEstudiantes();
+            fetchProfesores();
         } else {
             setMensajeValidacion(response);
         }
@@ -166,57 +170,58 @@ export const EstudianteForm = ({ fetchEstudiantes, estudianteSeleccionado, accci
 
     return (
         <div>
+
             {showSpinner && <ProgressIndicator label="Guardando..." />}
 
             <TextField label="Nombre"
-                value={estudiante.nombre}
+                value={profesor.nombre}
                 onChange={handleTextFieldChange('nombre')}
                 errorMessage={errorCampo.nombre}
             />
 
             <TextField type="Number" label="Edad"
-                value={estudiante.edad}
+                value={profesor.edad}
                 onChange={handleTextFieldChange('edad')}
                 errorMessage={errorCampo.edad}
             />
 
             <Dropdown label="Seleccione un género"
                 options={generos}
-                selectedKey={estudiante.sexo}
+                selectedKey={profesor.sexo}
                 onChange={handleSelectedSexoChange}
                 errorMessage={errorCampo.sexo}
             />
 
             <TextField label="Telefono"
-                value={estudiante.telefono}
+                value={profesor.telefono}
                 onChange={handleTextFieldChange('telefono')}
                 errorMessage={errorCampo.telefono}
             />
 
             <TextField label="Direccion"
-                value={estudiante.direccion}
+                value={profesor.direccion}
                 onChange={handleTextFieldChange('direccion')}
                 errorMessage={errorCampo.direccion}
             />
 
             <TextField label="Correo"
-                value={estudiante.correo}
+                value={profesor.correo}
                 onChange={handleTextFieldChange('correo')}
                 errorMessage={errorCampo.correo}
             />
 
-            <Dropdown label="Seleccione un país"
-                options={paises}
-                selectedKey={estudiante.paisId}
-                onChange={handleSelectedPaisChange}
-                errorMessage={errorCampo.paisId}
+            <Dropdown label="Seleccione la materia"
+                options={materias}
+                selectedKey={profesor.materiaId}
+                onChange={handleSelectedMateriaChange}
+                errorMessage={errorCampo.materiaId}
             />
 
-            <Dropdown label="Seleccione un curso"
-                options={cursos}
-                selectedKey={estudiante.cursoId}
-                onChange={handleSelectedCursoChange}
-                errorMessage={errorCampo.cursoId}
+            <Dropdown label="Seleccione un pais"
+                options={paises}
+                selectedKey={profesor.paisId}
+                onChange={handleSelectedPaisChange}
+                errorMessage={errorCampo.paisId}
             />
 
             <br />
