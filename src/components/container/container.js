@@ -28,31 +28,31 @@ export const Container = () => {
                 groups={[{
                     links: [{
                         name: 'Estudiantes',
-                        url: '/estudiantes',
+                        url: '/containers/estudiantes',
                         icon: 'UserFollowed',
                         key: 'estudiantesNav',
                     },
                     {
                         name: 'Profesores',
-                        url: '/profesores',
+                        url: '/containers/profesores',
                         icon: 'Telemarketer',
                         key: 'profesoresNav',
                     },
                     {
                         name: 'Cursos',
-                        url: '/cursos',
+                        url: '/containers/cursos',
                         icon: 'News',
                         key: 'cursosNav',
                     },
                     {
                         name: 'Paises',
-                        url: '/paises',
+                        url: '/containers/paises',
                         icon: 'World',
                         key: 'paisesNav',
                     },
                     {
                         name: 'Materias',
-                        url: '/materias',
+                        url: '/containers/materias',
                         icon: 'ReadingMode',
                         key: 'materiasNav',
                     }]
@@ -60,11 +60,11 @@ export const Container = () => {
             />
             <Router>
                 <Switch>
-                    <Route exact path="/estudiantes" component={Estudiante} />
-                    <Route exact path="/cursos" component={Curso} />
-                    <Route exact path="/paises" component={Pais} />
-                    <Route exact path="/materias" component={Materia} />
-                    <Route exact path="/profesores" component={Profesor} />
+                    <Route exact path="/containers/estudiantes" component={Estudiante} />
+                    <Route exact path="/containers/cursos" component={Curso} />
+                    <Route exact path="/containers/paises" component={Pais} />
+                    <Route exact path="/containers/materias" component={Materia} />
+                    <Route exact path="/containers/profesores" component={Profesor} />
                 </Switch>
             </Router>
         </div>

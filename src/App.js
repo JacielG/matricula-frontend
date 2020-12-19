@@ -9,14 +9,13 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Container />
-      {/* <Router>
+      <Router>
         <Switch>
           <Route exact path="/login" component={Login} />
           <Route path="/containers" component={Container} />
           <Route exact path="/" component={Login} />
         </Switch>
-      </Router> */}
+      </Router>
     </div>
   );
 }
